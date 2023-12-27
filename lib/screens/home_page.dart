@@ -1,8 +1,11 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:lmg_todo_app/database/todo.dart';
+import 'package:lmg_todo_app/enum_data.dart';
 import 'package:lmg_todo_app/screens/add_edit_bottomsheet.dart';
 import 'package:lmg_todo_app/screens/detail_page.dart';
 import 'package:lmg_todo_app/utils/colors_const.dart';
@@ -18,6 +21,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final TimerController timerController =Get.put(TimerController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +29,7 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         title: Text(
           "TODOS",
-          style: MyTextStyle.semiBold(fontSize: 16),
+          style: MyTextStyle.semiBold(fontSize: 17),
         ),
       ),
       body: getNotListView(),
@@ -55,10 +59,12 @@ class _HomePageState extends State<HomePage> {
 
   ValueListenableBuilder<Box<Todos>> getNotListView() {
     return ValueListenableBuilder(
-        valueListenable: Hive.box<Todos>("todosbox").listenable(),
+        valueListenable: Hive.box<Todos>("todos").listenable(),
         builder: (context, Box<Todos> box, _) {
           if (box.values.isEmpty) {
-            return const Text("No Todos");
+            return const Center(
+              child: Text("No Todos"),
+            );
           } else {
             return ListView.builder(
               padding: const EdgeInsets.only(
@@ -109,9 +115,16 @@ class _HomePageState extends State<HomePage> {
                                       // color: green,
                                       borderRadius: BorderRadius.circular(4),
                                     ),
-                                    child: const Text("In-Progress"),
+                                    child: Obx((){
+                                      return  Text("${statusNames[timerController.timerStatus.value]}");
+                                    }),
                                   ),
-                                  const Text("05:00"),
+                                   Obx(
+                                        () => Text(
+                                      timerController.formattedTime(),
+                                      style: MyTextStyle.semiBold(fontSize: 15),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -159,8 +172,8 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     child: Image.asset(
                                       ImageConst.delete,
-                                      width: 16,
-                                      height: 16,
+                                      width: 17,
+                                      height: 17,
                                       color: red,
                                     ),
                                   ),

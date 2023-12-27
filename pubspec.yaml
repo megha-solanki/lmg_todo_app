@@ -42,6 +42,8 @@ dependencies:
   hive_flutter: ^1.1.0
   #for path provider
   path_provider: ^2.1.1
+  #for state management
+  get: ^4.6.6
 
 
 dev_dependencies:

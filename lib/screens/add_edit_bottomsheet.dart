@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:lmg_todo_app/database/todo.dart';
 import 'package:lmg_todo_app/utils/design_const.dart';
 import 'package:lmg_todo_app/utils/my_textstyle.dart';
 import 'package:lmg_todo_app/widgets/custom_button.dart';
 
+import '../enum_data.dart';
 import '../main.dart';
 import '../utils/colors_const.dart';
 import '../widgets/custom_textformfield.dart';
@@ -18,6 +20,9 @@ class AddEditBottomSheet extends StatefulWidget {
 class _AddEditBottomSheetState extends State<AddEditBottomSheet> {
   TextEditingController txtTitle = TextEditingController();
   TextEditingController txtDescription = TextEditingController();
+
+  final TimerController timerController=Get.put(TimerController());
+
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +86,9 @@ class _AddEditBottomSheetState extends State<AddEditBottomSheet> {
                           .add(
                             Todos(
                                 title: txtTitle.text,
-                                descriptions: txtDescription.text),
+                                descriptions: txtDescription.text,
+                                 status: "${timerController.timerStatus}"
+                            ),
                           )
                           .then((value) => Navigator.pop(context));
                     },

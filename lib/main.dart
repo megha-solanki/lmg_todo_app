@@ -9,8 +9,10 @@ Box? box;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  box = await Hive.openBox<Todos>("todosbox");
-  Hive.registerAdapter(TodosAdapter());
+  if(!Hive.isAdapterRegistered(1)){
+    Hive.registerAdapter(TodosAdapter());
+  }
+  box = await Hive.openBox<Todos>("todos");
   runApp(const MyApp());
 }
 

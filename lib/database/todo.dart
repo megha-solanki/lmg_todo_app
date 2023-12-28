@@ -4,7 +4,16 @@ part 'todo.g.dart';
 
 @HiveType(typeId: 1)
 class Todos {
-  Todos({this.title, this.descriptions, this.status});
+  Todos(
+      {this.key,
+      this.title,
+      this.descriptions,
+      this.status,
+      this.todoMinutes,
+      this.todoSeconds});
+
+  @HiveField(0)
+  String? key;
 
   @HiveField(1)
   String? title;
@@ -16,10 +25,10 @@ class Todos {
   String? status;
 
   @HiveField(4)
-  int? minutes;
+  int? todoMinutes;
 
   @HiveField(5)
-  int? seconds;
+  int? todoSeconds;
 
   @HiveField(6)
   int? endMinutes;

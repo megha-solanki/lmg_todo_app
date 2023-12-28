@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-
 class DesignConst {
   static const EdgeInsets screenPadding = EdgeInsets.only(left: 16, right: 16);
 
   //for button height
   static const double btn50 = 50;
+
+  static ShapeBorder bottomSheetRadius = const RoundedRectangleBorder(
+    borderRadius: BorderRadius.only(
+      topLeft: Radius.circular(16),
+      topRight: Radius.circular(16),
+    ),
+  );
 
   //for space column or row
   static const Gap gap4 = Gap(4);

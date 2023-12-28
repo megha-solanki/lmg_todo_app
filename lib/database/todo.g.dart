@@ -17,12 +17,13 @@ class TodosAdapter extends TypeAdapter<Todos> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Todos(
+      key: fields[0] as String?,
       title: fields[1] as String?,
       descriptions: fields[2] as String?,
+      status: fields[3] as String?,
+      todoMinutes: fields[4] as int?,
+      todoSeconds: fields[5] as int?,
     )
-      ..status = fields[3] as String?
-      ..minutes = fields[4] as int?
-      ..seconds = fields[5] as int?
       ..endMinutes = fields[6] as int?
       ..endSeconds = fields[7] as int?;
   }
@@ -30,7 +31,9 @@ class TodosAdapter extends TypeAdapter<Todos> {
   @override
   void write(BinaryWriter writer, Todos obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
+      ..writeByte(0)
+      ..write(obj.key)
       ..writeByte(1)
       ..write(obj.title)
       ..writeByte(2)
@@ -38,9 +41,9 @@ class TodosAdapter extends TypeAdapter<Todos> {
       ..writeByte(3)
       ..write(obj.status)
       ..writeByte(4)
-      ..write(obj.minutes)
+      ..write(obj.todoMinutes)
       ..writeByte(5)
-      ..write(obj.seconds)
+      ..write(obj.todoSeconds)
       ..writeByte(6)
       ..write(obj.endMinutes)
       ..writeByte(7)

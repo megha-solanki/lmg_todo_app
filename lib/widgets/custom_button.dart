@@ -5,7 +5,7 @@ import 'package:lmg_todo_app/utils/my_textstyle.dart';
 import 'package:lmg_todo_app/widgets/loading_component.dart';
 
 class CustomButton extends StatelessWidget {
-  final bool isLoading;
+  final bool? isLoading;
   final VoidCallback onPressed;
   final String label;
   final double? height;
@@ -15,7 +15,7 @@ class CustomButton extends StatelessWidget {
 
   const CustomButton(
       {super.key,
-      required this.isLoading,
+      this.isLoading,
       required this.onPressed,
       this.bgColor,
       this.txtColor,
@@ -38,8 +38,8 @@ class CustomButton extends StatelessWidget {
           backgroundColor: MaterialStateProperty.all(bgColor ?? appPrimary),
           elevation: MaterialStateProperty.all<double>(0),
         ),
-        onPressed: isLoading ? null : onPressed,
-        child: isLoading
+        onPressed: isLoading == true ? null : onPressed,
+        child: isLoading == true
             ? const LoadingComponent()
             : Text(
                 label,

@@ -1,19 +1,23 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:lmg_todo_app/controller/todo_controller.dart';
 import 'package:lmg_todo_app/database/todo.dart';
 import 'package:lmg_todo_app/utils/design_const.dart';
 import 'package:lmg_todo_app/utils/my_textstyle.dart';
 import 'package:lmg_todo_app/widgets/custom_button.dart';
 
 import '../enum_data.dart';
-import '../main.dart';
+
 import '../utils/colors_const.dart';
 import '../widgets/custom_textformfield.dart';
+import 'home_page/select_time_bottomsheet.dart';
 
 class AddEditBottomSheet extends StatefulWidget {
-  const AddEditBottomSheet({super.key});
+  final bool isEdited;
+  final Todos? todoData;
+
+  const AddEditBottomSheet({super.key, this.isEdited = false, this.todoData});
 
   @override
   State<AddEditBottomSheet> createState() => _AddEditBottomSheetState();
@@ -22,8 +26,28 @@ class AddEditBottomSheet extends StatefulWidget {
 class _AddEditBottomSheetState extends State<AddEditBottomSheet> {
   TextEditingController txtTitle = TextEditingController();
   TextEditingController txtDescription = TextEditingController();
+  TextEditingController txtTime = TextEditingController();
 
-  final TimerController timerController = Get.put(TimerController());
+  final TodoController todoController = Get.put(TodoController());
+
+  int? selectedSecond, selectedMinute;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isEdited == true) {
+      getEditedVal();
+    }
+  }
+
+  getEditedVal() {
+    txtTitle.text = "${widget.todoData!.title}";
+    txtDescription.text = "${widget.todoData!.descriptions}";
+    txtTime.text =
+        "${widget.todoData!.todoMinutes}:${widget.todoData!.todoSeconds}";
+    selectedMinute = int.parse("${widget.todoData!.todoMinutes}");
+    selectedSecond = int.parse("${widget.todoData!.todoSeconds}");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +69,7 @@ class _AddEditBottomSheetState extends State<AddEditBottomSheet> {
         children: [
           DesignConst.gap15,
           Text(
-            "Add Todo",
+            widget.isEdited == true ? "Edit Todo" : "Add Todo",
             style: MyTextStyle.semiBold(fontSize: 17),
           ),
           DesignConst.gap15,
@@ -60,6 +84,40 @@ class _AddEditBottomSheetState extends State<AddEditBottomSheet> {
               hintText: "Enter description",
               controller: txtDescription,
               keyboardType: TextInputType.text),
+          DesignConst.gap15,
+          CustomTextFormField(
+            onTap: () {
+              showModalBottomSheet(
+                elevation: 1,
+                isDismissible: true,
+                shape: DesignConst.bottomSheetRadius,
+                isScrollControlled: true,
+                context: context,
+                builder: (context) => SelectTimeBottomSheet(
+                  selectedSecond: selectedSecond,
+                  selectedMinute: selectedMinute,
+                  onSelectTime: (minute, second) {
+                    setState(() {
+                      selectedSecond = second;
+                      selectedMinute = minute;
+                      txtTime.text = "$selectedMinute:$selectedSecond";
+                    });
+                  },
+                ),
+              );
+            },
+            controller: txtTime,
+            readOnly: true,
+            isAbsorbing: true,
+            label: "Time",
+            hintText: "Select time",
+            sImage: const Icon(
+              Icons.calendar_month,
+              size: 21,
+              color: grey300,
+            ),
+          ),
+          DesignConst.gap15,
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: Row(
@@ -80,18 +138,32 @@ class _AddEditBottomSheetState extends State<AddEditBottomSheet> {
                 Expanded(
                   child: CustomButton(
                     height: 44,
-                    label: "Save",
+                    label: widget.isEdited == true ? "Edit" : "Save",
                     isLoading: false,
                     onPressed: () async {
-                      await todoBox
-                          .add(Todos(
-                        title: txtTitle.text,
-                        descriptions: txtDescription.text,
-                        status: "${timerController.timerStatus}",
-                      ))
+                      String keyName;
+                      if (widget.isEdited && widget.todoData != null) {
+                        keyName = widget.todoData!.key ??
+                            DateTime.now().millisecondsSinceEpoch.toString();
+                      } else {
+                        keyName =
+                            DateTime.now().millisecondsSinceEpoch.toString();
+                      }
+
+                      todoController
+                          .addEditTodo(
+                        keyName,
+                        Todos(
+                          key: keyName,
+                          title: txtTitle.text,
+                          descriptions: txtDescription.text,
+                          status: statusNames[TimerStatus.todo],
+                          todoMinutes: selectedMinute,
+                          todoSeconds: selectedSecond,
+                        ),
+                      )
                           .then((value) {
                         Navigator.pop(context);
-                        log("key -> $value");
                       });
                     },
                   ),

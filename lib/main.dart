@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:lmg_todo_app/database/todo.dart';
 import 'package:lmg_todo_app/screens/home_page/home_page.dart';
 import 'package:lmg_todo_app/utils/colors_const.dart';
+
+import 'controller/initialize_controllers.dart';
 
 late Box<Todos> todoBox;
 
@@ -21,7 +24,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
+      initialBinding: InitializeControllers(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           scaffoldBackgroundColor: white,

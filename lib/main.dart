@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:lmg_todo_app/database/todo.dart';
-import 'package:lmg_todo_app/screens/home_page.dart';
+import 'package:lmg_todo_app/screens/home_page/home_page.dart';
 import 'package:lmg_todo_app/utils/colors_const.dart';
 
-Box? box;
+late Box<Todos> todoBox;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  if(!Hive.isAdapterRegistered(1)){
+  if (!Hive.isAdapterRegistered(1)) {
     Hive.registerAdapter(TodosAdapter());
   }
-  box = await Hive.openBox<Todos>("todos");
+  todoBox = await Hive.openBox<Todos>("todos");
   runApp(const MyApp());
 }
 

@@ -4,7 +4,7 @@ part 'todo.g.dart';
 
 @HiveType(typeId: 1)
 class Todos {
-  Todos({this.title, this.descriptions,this.status});
+  Todos({this.title, this.descriptions, this.status});
 
   @HiveField(1)
   String? title;

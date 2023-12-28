@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lmg_todo_app/database/todo.dart';
@@ -21,8 +23,7 @@ class _AddEditBottomSheetState extends State<AddEditBottomSheet> {
   TextEditingController txtTitle = TextEditingController();
   TextEditingController txtDescription = TextEditingController();
 
-  final TimerController timerController=Get.put(TimerController());
-
+  final TimerController timerController = Get.put(TimerController());
 
   @override
   Widget build(BuildContext context) {
@@ -82,15 +83,16 @@ class _AddEditBottomSheetState extends State<AddEditBottomSheet> {
                     label: "Save",
                     isLoading: false,
                     onPressed: () async {
-                      await box!
-                          .add(
-                            Todos(
-                                title: txtTitle.text,
-                                descriptions: txtDescription.text,
-                                 status: "${timerController.timerStatus}"
-                            ),
-                          )
-                          .then((value) => Navigator.pop(context));
+                      await todoBox
+                          .add(Todos(
+                        title: txtTitle.text,
+                        descriptions: txtDescription.text,
+                        status: "${timerController.timerStatus}",
+                      ))
+                          .then((value) {
+                        Navigator.pop(context);
+                        log("key -> $value");
+                      });
                     },
                   ),
                 )

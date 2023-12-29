@@ -55,9 +55,6 @@ class TodoComponentState extends State<TodoComponent>
   void stopTimer() {
     setState(() {
       timer?.cancel();
-      hours.value = 0;
-      minutes.value = 0;
-      seconds.value = 0;
     });
   }
 
@@ -74,7 +71,6 @@ class TodoComponentState extends State<TodoComponent>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    log("-------------  $hours: $minutes : $seconds");
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 7.0),
       child: InkWell(
@@ -111,18 +107,13 @@ class TodoComponentState extends State<TodoComponent>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 2, horizontal: 6),
-                        decoration: BoxDecoration(
-                          // color: green,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: const Text("TODO"),
+                      Text(
+                        "Task: ${widget.todos.todoMinutes} Minutes ${widget.todos.todoSeconds}",
+                        style: MyTextStyle.regular(fontSize: 13, color: black),
                       ),
                       Text(
                         formattedTime(),
-                        style: MyTextStyle.semiBold(fontSize: 15),
+                        style: MyTextStyle.semiBold(fontSize: 14),
                       ),
                     ],
                   ),
@@ -135,7 +126,7 @@ class TodoComponentState extends State<TodoComponent>
               ),
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
+                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 12),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -147,37 +138,55 @@ class TodoComponentState extends State<TodoComponent>
                             "${widget.todos.title}",
                             style: MyTextStyle.semiBold(fontSize: 15),
                           ),
-                          DesignConst.gap8,
+                          DesignConst.gap6,
                           Text(
                             "${widget.todos.descriptions}",
                             style: MyTextStyle.regular(
                                 fontSize: 13.5, color: grey600),
                           ),
-                          DesignConst.gap8,
-                          Text(
-                            "${widget.todos.todoMinutes}:${widget.todos.todoSeconds}",
-                            style: MyTextStyle.regular(
-                                fontSize: 13.5, color: grey600),
+                          DesignConst.gap6,
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 2, horizontal: 6),
+                            decoration: BoxDecoration(
+                              color: grey50,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              "${widget.todos.status}",
+                              style: MyTextStyle.medium(fontSize: 13),
+                            ),
                           ),
                         ],
                       ),
                     ),
                     DesignConst.gap14,
-                    InkWell(
-                      onTap: widget.onDelete,
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: red.withOpacity(0.1),
+                    Column(
+                      children: [
+                        widget.todos.isPlaying
+                            ? Text(
+                                "Pause",
+                                style: MyTextStyle.medium(color: appPrimary),
+                              )
+                            : const SizedBox(),
+                        DesignConst.gap15,
+                        InkWell(
+                          onTap: widget.onDelete,
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: red.withOpacity(0.1),
+                            ),
+                            child: Image.asset(
+                              ImageConst.delete,
+                              width: 17,
+                              height: 17,
+                              color: red,
+                            ),
+                          ),
                         ),
-                        child: Image.asset(
-                          ImageConst.delete,
-                          width: 17,
-                          height: 17,
-                          color: red,
-                        ),
-                      ),
+                      ],
                     ),
                   ],
                 ),

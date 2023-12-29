@@ -21,8 +21,8 @@ class SelectTimeBottomSheet extends StatefulWidget {
 }
 
 class _SelectTimeBottomSheetState extends State<SelectTimeBottomSheet> {
-  int selectedMinute = 1;
-  int selectedSecond = 1;
+  int selectedMinute = 0;
+  int selectedSecond = 0;
 
   @override
   void initState() {
@@ -45,7 +45,7 @@ class _SelectTimeBottomSheetState extends State<SelectTimeBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300,
+      height: 400,
       decoration: const BoxDecoration(
         color: white,
         borderRadius: BorderRadius.only(
@@ -76,19 +76,19 @@ class _SelectTimeBottomSheetState extends State<SelectTimeBottomSheet> {
                 child: CupertinoPicker(
                   itemExtent: 30,
                   squeeze: 1,
-                  diameterRatio: 1.25,
+                  diameterRatio: 1,
                   selectionOverlay: Container(
                     decoration: const BoxDecoration(
                       color: Colors.transparent,
                     ),
                   ),
-                  scrollController: FixedExtentScrollController(
-                      initialItem: selectedMinute - 1),
-                  children: List.generate(5, (index) {
+                  scrollController:
+                      FixedExtentScrollController(initialItem: selectedMinute),
+                  children: List.generate(6, (index) {
                     return Padding(
                       padding: const EdgeInsets.only(top: 8.2),
                       child: Text(
-                        "${index + 1}",
+                        "$index",
                         style: selectedMinute == index
                             ? MyTextStyle.semiBold(fontSize: 17)
                             : MyTextStyle.regular(fontSize: 17),
@@ -97,7 +97,7 @@ class _SelectTimeBottomSheetState extends State<SelectTimeBottomSheet> {
                   }),
                   onSelectedItemChanged: (value) {
                     setState(() {
-                      selectedMinute = value + 1;
+                      selectedMinute = value;
                     });
                   },
                 ),
@@ -114,12 +114,12 @@ class _SelectTimeBottomSheetState extends State<SelectTimeBottomSheet> {
                       color: Colors.transparent,
                     ),
                   ),
-                  scrollController: FixedExtentScrollController(
-                      initialItem: selectedSecond - 1),
-                  children: List.generate(60, (index) {
+                  scrollController:
+                      FixedExtentScrollController(initialItem: selectedSecond),
+                  children: List.generate(61, (index) {
                     return Padding(
                       padding: const EdgeInsets.only(top: 8.2),
-                      child: Text("${index + 1}",
+                      child: Text("$index",
                           style: selectedSecond == index
                               ? MyTextStyle.semiBold(fontSize: 17)
                               : MyTextStyle.regular(fontSize: 17)),
@@ -127,14 +127,16 @@ class _SelectTimeBottomSheetState extends State<SelectTimeBottomSheet> {
                   }),
                   onSelectedItemChanged: (value) {
                     setState(() {
-                      selectedSecond = value + 1;
+                      selectedSecond = value;
                     });
                   },
                 ),
               ),
             ],
           ),
-          DesignConst.gap8,
+          const SizedBox(
+            height: 40,
+          ),
           SizedBox(
             width: 120,
             child: CustomButton(

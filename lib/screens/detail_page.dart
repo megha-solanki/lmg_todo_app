@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lmg_todo_app/database/todo.dart';
-import 'package:lmg_todo_app/main.dart';
+import 'package:lmg_todo_app/enum_data.dart';
+
 import 'package:lmg_todo_app/screens/add_edit_bottomsheet.dart';
 import 'package:lmg_todo_app/utils/colors_const.dart';
 import 'package:lmg_todo_app/utils/design_const.dart';
@@ -27,10 +30,14 @@ class TodoDetailsPage extends StatefulWidget {
 
 class _TodoDetailsPageState extends State<TodoDetailsPage> {
   final TodoController todoController = Get.put(TodoController());
+
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       final todoData = todoController.todoList[widget.index];
+
+      log("---> ${todoData.isPlaying}");
+      log("--->  ${todoData.todoMinutes} ${widget.componentState.minutes.value}  ${todoData.todoSeconds!}  ${widget.componentState.seconds.value}");
       return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -100,7 +107,17 @@ class _TodoDetailsPageState extends State<TodoDetailsPage> {
                 ),
                 DesignConst.gap4,
                 Text(
-                  "TODO",
+                  "${todoData.status}",
+                  style: MyTextStyle.medium(fontSize: 14, color: black),
+                ),
+                DesignConst.gap15,
+                Text(
+                  "Todo Time :",
+                  style: MyTextStyle.medium(fontSize: 14, color: grey600),
+                ),
+                DesignConst.gap4,
+                Text(
+                  " ${todoData.todoMinutes} Minutes ${todoData.todoSeconds}",
                   style: MyTextStyle.medium(fontSize: 14, color: black),
                 ),
                 DesignConst.gap15,
@@ -123,44 +140,95 @@ class _TodoDetailsPageState extends State<TodoDetailsPage> {
                 DesignConst.gap15,
                 Row(
                   children: [
-                    Expanded(
-                      child: CustomButton(
-                        bgColor: green,
-                        height: 40,
-                        txtColor: white,
-                        label: "Play",
-                        isLoading: false,
-                        onPressed: () {
-                          todoController.addEditTodo(todoData.key, todoData);
-                          widget.componentState.startTimer();
-                        },
+                    if (todoData.isPlaying)
+                      Expanded(
+                        child: CustomButton(
+                          height: 40,
+                          label: "Pause",
+                          isLoading: false,
+                          onPressed: () {
+                            final newTodo = Todos(
+                                key: todoData.key,
+                                status: statusNames[TimerStatusEnum.inProgress],
+                                title: todoData.title,
+                                descriptions: todoData.descriptions,
+                                todoMinutes: todoData.todoMinutes,
+                                todoSeconds: todoData.todoSeconds,
+                                isPlaying: false,
+                                endMinutes: widget.componentState.minutes.value,
+                                endSeconds:
+                                    widget.componentState.seconds.value);
+                            todoController.addEditTodo(todoData.key, newTodo);
+                            widget.componentState.pauseTimer();
+                          },
+                        ),
+                      )
+                    else
+                      Expanded(
+                        child: CustomButton(
+                          bgColor: green,
+                          height: 40,
+                          txtColor: white,
+                          label: "Play",
+                          isLoading: false,
+                          onPressed: () {
+                            final newTodo = Todos(
+                              key: todoData.key,
+                              status: statusNames[TimerStatusEnum.inProgress],
+                              title: todoData.title,
+                              isPlaying: true,
+                              descriptions: todoData.descriptions,
+                              todoMinutes: todoData.todoMinutes,
+                              todoSeconds: todoData.todoSeconds,
+                            );
+                            todoController.addEditTodo(todoData.key, newTodo);
+                            widget.componentState.startTimer();
+                          },
+                        ),
                       ),
-                    ),
                     DesignConst.gap10,
                     Expanded(
                       child: CustomButton(
                         height: 40,
-                        label: "Pause",
-                        isLoading: false,
-                        onPressed: () {
-                          widget.componentState.pauseTimer();
-                        },
-                      ),
-                    ),
-                    DesignConst.gap10,
-                    Expanded(
-                      child: CustomButton(
-                        height: 40,
-                        bgColor: red,
+                        bgColor: todoData.status ==
+                                statusNames[TimerStatusEnum.inProgress]
+                            ? red
+                            : red.withOpacity(0.5),
                         label: "Stop",
                         isLoading: false,
                         onPressed: () {
-                          widget.componentState.stopTimer();
+                          if (todoData.status ==
+                              statusNames[TimerStatusEnum.inProgress]) {
+                            final newTodo = Todos(
+                                key: todoData.key,
+                                status: statusNames[TimerStatusEnum.done],
+                                title: todoData.title,
+                                descriptions: todoData.descriptions,
+                                todoMinutes: todoData.todoMinutes,
+                                todoSeconds: todoData.todoSeconds,
+                                isPlaying: false,
+                                endMinutes: widget.componentState.minutes.value,
+                                endSeconds:
+                                    widget.componentState.seconds.value);
+
+                            todoController.addEditTodo(todoData.key, newTodo);
+                            widget.componentState.stopTimer();
+                          }
                         },
                       ),
-                    )
+                    ),
                   ],
                 ),
+                if (todoData.todoMinutes! <=
+                        widget.componentState.minutes.value &&
+                    todoData.todoSeconds! < widget.componentState.seconds.value)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: Text(
+                      "Task overdue",
+                      style: MyTextStyle.medium(fontSize: 14, color: red),
+                    ),
+                  ),
               ],
             ),
           ),

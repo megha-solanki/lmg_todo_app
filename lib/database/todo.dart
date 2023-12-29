@@ -5,12 +5,15 @@ part 'todo.g.dart';
 @HiveType(typeId: 1)
 class Todos {
   Todos(
-      {this.key,
+      {required this.key,
       this.title,
       this.descriptions,
       this.status,
       this.todoMinutes,
-      this.todoSeconds});
+      this.todoSeconds,
+      this.endMinutes,
+      this.endSeconds,
+      this.isPlaying = false});
 
   @HiveField(0)
   String? key;
@@ -35,4 +38,7 @@ class Todos {
 
   @HiveField(7)
   int? endSeconds;
+
+  @HiveField(8)
+  bool isPlaying;
 }

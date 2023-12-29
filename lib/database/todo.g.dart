@@ -23,15 +23,16 @@ class TodosAdapter extends TypeAdapter<Todos> {
       status: fields[3] as String?,
       todoMinutes: fields[4] as int?,
       todoSeconds: fields[5] as int?,
-    )
-      ..endMinutes = fields[6] as int?
-      ..endSeconds = fields[7] as int?;
+      endMinutes: fields[6] as int?,
+      endSeconds: fields[7] as int?,
+      isPlaying: fields[8] as bool,
+    );
   }
 
   @override
   void write(BinaryWriter writer, Todos obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.key)
       ..writeByte(1)
@@ -47,7 +48,9 @@ class TodosAdapter extends TypeAdapter<Todos> {
       ..writeByte(6)
       ..write(obj.endMinutes)
       ..writeByte(7)
-      ..write(obj.endSeconds);
+      ..write(obj.endSeconds)
+      ..writeByte(8)
+      ..write(obj.isPlaying);
   }
 
   @override

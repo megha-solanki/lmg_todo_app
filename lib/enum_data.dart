@@ -1,7 +1,7 @@
-enum TimerStatus { todo, inProgress, done }
+enum TimerStatusEnum { todo, inProgress, done }
 
-final Map<TimerStatus, String> statusNames = {
-  TimerStatus.todo: 'TODO',
-  TimerStatus.inProgress: 'In-Progress',
-  TimerStatus.done: 'Done',
+final Map<TimerStatusEnum, String> statusNames = {
+  TimerStatusEnum.todo: 'TODO',
+  TimerStatusEnum.inProgress: 'In-Progress',
+  TimerStatusEnum.done: 'Done',
 };

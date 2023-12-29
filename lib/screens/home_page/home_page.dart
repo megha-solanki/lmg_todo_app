@@ -56,20 +56,22 @@ class _HomePageState extends State<HomePage> {
   Widget getNotListView() {
     return Obx(() {
       final todoListData = todoController.todoList;
-      return ListView.builder(
-        padding:
-            const EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 80),
-        itemCount: todoListData.length,
-        itemBuilder: (BuildContext context, int index) {
-          return TodoComponent(
-            todos: todoListData[index],
-            index: index,
-            onDelete: () {
-              todoController.deleteTodo(index);
-            },
-          );
-        },
-      );
+      return todoListData.isNotEmpty
+          ? ListView.builder(
+              padding: const EdgeInsets.only(
+                  left: 14, right: 14, top: 10, bottom: 80),
+              itemCount: todoListData.length,
+              itemBuilder: (BuildContext context, int index) {
+                return TodoComponent(
+                  todos: todoListData[index],
+                  index: index,
+                  onDelete: () {
+                    todoController.deleteTodo(index);
+                  },
+                );
+              },
+            )
+          : const Text("Data not found");
     });
   }
 }

@@ -225,7 +225,7 @@ class _TodoDetailsPageState extends State<TodoDetailsPage> {
                   Padding(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: Text(
-                      "Task overdue",
+                      "Todo time is overdue",
                       style: MyTextStyle.medium(fontSize: 14, color: red),
                     ),
                   ),
